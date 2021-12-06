@@ -9,23 +9,37 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
+ENV_PATH = BASE_DIR / '.env'
 
+load_dotenv(ENV_PATH)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!qsbuqeb!00aelr4__e+66fb)w8((*qyqfz-jrkdw(_$u3$h@4'
+SECRET_KEY = os.getenv('SECRET_KEY')
+ROOT_SECRET = os.getenv('ROOT_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+APPEND_SLASH = False
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+
+# reset token time before expiry
+DURATION = os.getenv('DURATION')
+
+# Add 'prefix' to all urlpatterns
+API_VERSION = os.getenv('API_VERSION')
 
 
 # Application definition
@@ -37,19 +51,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'news_board.urls'
+ROOT_URLCONF = 'news_board_conf.urls'
 
 TEMPLATES = [
     {
@@ -67,7 +82,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'news_board.wsgi.application'
+WSGI_APPLICATION = 'news_board_conf.wsgi.application'
+ASGI_APPLICATION = 'news_board_conf.asgi.application'
 
 
 # Database
@@ -118,6 +134,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = False
+CORS_EXPOSE_HEADERS = [
+    'Access-Control-Allow-Methods',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Headers',
+    'Access-Control-Max-Age'
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Access-Token',
+    'Secret',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
