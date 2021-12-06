@@ -92,6 +92,7 @@ celerybeat.pid
 Pipfile
 Pipfile.lock
 .venv
+.env
 env/
 venv/
 ENV/
