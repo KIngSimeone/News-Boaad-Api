@@ -10,6 +10,6 @@ class Posts(models.Model):
 
 class Comments(models.Model):
     content = models.TextField(null=True)
-    author_name = models.DateField(null=True)
+    author_name = models.TextField(null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     

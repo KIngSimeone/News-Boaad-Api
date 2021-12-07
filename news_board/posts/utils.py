@@ -51,3 +51,5 @@ def get_post_by_id(id):
         logger.error('get_post_by_id@Error')
         logger.error(e)
         return None
+
+def create_post(title, link)
