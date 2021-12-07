@@ -52,4 +52,16 @@ def get_post_by_id(id):
         logger.error(e)
         return None
 
-def create_post(title, link,)
+def create_post(title, link, author_name):
+    try:
+        post = Posts.objects.create(
+            title=title,
+            link=link,
+            author_name=author_name
+        )
+        return post
+        
+    except Exception as e:
+        logger.error('create_user@error')
+        logger.error(e)
+        return None
