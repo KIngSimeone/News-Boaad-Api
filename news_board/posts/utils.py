@@ -50,6 +50,6 @@ def get_post_by_id(id):
     except ObjectDoesNotExist as e:
         logger.error('get_post_by_id@Error')
         logger.error(e)
-        return None
+#         return None
 
-def create_post(title, link)
+# def create_post(title, link)
