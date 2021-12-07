@@ -5,7 +5,6 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 
-from .utils import (
-    get_all_posts, get_post_by_id, create_post, update_post,
-    delete_post
-)
+from .serializers import CommentSerializer, PostSerializer
+from .utils import (create_post, delete_post, get_all_posts, get_post_by_id,
+                    update_post)
