@@ -28,9 +28,9 @@ def get_all_posts(search=None, filter=None):
         if search:
             # search allposts
             allPosts = allPosts.filter(
-                Q(full_name__icontains=search) |
-                Q(email_address__iexact=search) |
-                Q(phone_number__iexact=search)
+                Q(title__icontains=search) |
+                Q(author_name__icontains=search) |
+                Q(id__iexact=search)
             )
 
         return allPosts
