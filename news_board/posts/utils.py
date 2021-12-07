@@ -60,8 +60,22 @@ def create_post(title, link, author_name):
             author_name=author_name
         )
         return post
-        
+
     except Exception as e:
-        logger.error('create_user@error')
+        logger.error('create_post@error')
         logger.error(e)
         return None
+
+def update_post(post, title, link, author_name):
+    try:
+        post.title = title
+        post.link = link
+        post.autho_name = author_name
+        post.save()
+
+        return post
+    except Exception as e:
+        logger.error('update_post@error')
+        logger.error(e)
+        return None
+    
