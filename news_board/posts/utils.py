@@ -39,3 +39,13 @@ def get_all_posts(search=None, filter=None):
         logger.error('get_all_posts@Error')
         logger.error(e)
         return []
+
+def get_post_by_id(id):
+    try:
+        post = Posts.objects.get(id=id)
+        return post
+
+    except ObjectDoesNotExist as e:
+        logger.error('get_post_by_id@Error')
+        logger.error(e)
+        return None
