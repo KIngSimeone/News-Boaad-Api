@@ -7,4 +7,9 @@ class Posts(models.Model):
     upvotes = models.DateField(null=True)
     author_name = models.DateField(null=True)
     created_date = models.DateTimeField(auto_now_add=True)
+
+class Comments(models.Model):
+    content = models.TextField(null=True)
+    author_name = models.DateField(null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     
