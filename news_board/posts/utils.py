@@ -11,6 +11,7 @@ from .models import Comments, Posts
 
 logger = logging.getLogger(__name__)
 
+
 def get_all_posts(search=None, filter=None):
     try:
         queryset = dict()
@@ -39,6 +40,7 @@ def get_all_posts(search=None, filter=None):
         logger.error('get_all_posts@Error')
         logger.error(e)
         return []
+
 
 def get_post_by_id(id):
     try:
