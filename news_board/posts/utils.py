@@ -52,6 +52,7 @@ def get_post_by_id(id):
         logger.error(e)
         return None
 
+
 def create_post(title, link, author_name):
     try:
         post = Posts.objects.create(
@@ -66,6 +67,7 @@ def create_post(title, link, author_name):
         logger.error(e)
         return None
 
+
 def update_post(post, title, link, author_name):
     try:
         post.title = title
@@ -79,11 +81,12 @@ def update_post(post, title, link, author_name):
         logger.error(e)
         return None
 
+
 def delete_post(post):
     try:
         post.delete()
         return True
-        
+
     except Exception as e:
         logger.error('delete_post@Error')
         logger.error(e)
