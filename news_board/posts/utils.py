@@ -75,11 +75,11 @@ def update_post(post, title, link, author_name):
         post.author_name = author_name
         post.save()
 
-        return post
+        return post, "success"
     except Exception as e:
         logger.error('update_post@error')
         logger.error(e)
-        return None
+        return None, str(e)
 
 
 def delete_post(post):
