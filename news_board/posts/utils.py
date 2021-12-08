@@ -166,9 +166,9 @@ def update_comment(comment, content, author_name):
 def delete_comment(comment):
     try:
         comment.delete()
-        return True
+        return True, "success"
 
     except Exception as e:
         logger.error('delete_comment@Error')
         logger.error(e)
-        return False
+        return False. str(e)
