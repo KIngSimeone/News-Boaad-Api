@@ -6,8 +6,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from .serializers import CommentSerializer, PostSerializer
-from .utils import (create_post, delete_post, get_all_posts, get_post_by_id,
-                    update_post)
+from .utils import (create_comment, create_post, delete_comment, delete_post,
+                    get_all_posts, get_comment_by_id, get_post_by_id,
+                    get_posts_comments, update_comment, update_post)
 
 
 class PostsView(APIView):
@@ -23,7 +24,7 @@ class PostsView(APIView):
             if 'q' in filterQuery:
                 searchQuery = filterQuery.get('q')
                 del filterQuery['q']
-        
+
         posts = get_all_posts(searchQuery, filterQuery)
         serializer = PostSerializer(posts, many=True)
         return http_response(
@@ -31,7 +32,7 @@ class PostsView(APIView):
             status=status.HTTP_200_OK,
             data=serializer.data
         )
-    
+
     def post(self, request, format=None):
         """Create a post"""
 
@@ -46,7 +47,7 @@ class PostsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 error_code=ErrorCodes.INVALID_PAYLOAD,
             )
-        
+
         title = payload['title']
         link = payload['link']
         author_name = payload['author_name']
@@ -66,7 +67,7 @@ class PostsView(APIView):
             status=status.HTTP_201_CREATED,
             data=serializer.data
         )
-    
+
     def put(self, request, id, format=None):
         "Update a Post"
 
@@ -90,12 +91,12 @@ class PostsView(APIView):
                 error_code=ErrorCodes.NOT_FOUND,
             )
 
-
         title = payload['title']
         link = payload['link']
         author_name = payload['author_name']
 
-        updated_post, msg = update_post(post_to_update, title, link, author_name)
+        updated_post, msg = update_post(
+            post_to_update, title, link, author_name)
         if not updated_post:
             return http_response(
                 msg=msg,
@@ -109,7 +110,7 @@ class PostsView(APIView):
             status=status.HTTP_200_OK,
             data=serializer.data
         )
-    
+
     def get(self, request, id, format=None):
         "Get single post"
         post = get_post_by_id(id)
@@ -125,4 +126,3 @@ class PostsView(APIView):
             status=status.HTTP_200_OK,
             data=serializer.data
         )
-
