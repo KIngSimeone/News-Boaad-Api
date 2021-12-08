@@ -121,7 +121,7 @@ class PostsView(APIView):
             )
         serializer = PostSerializer(post)
         return http_response(
-            msg="Post Successfully Updated",
+            msg="Post Successfully Retrieved",
             status=status.HTTP_200_OK,
             data=serializer.data
         )
