@@ -115,7 +115,7 @@ class PostsView(APIView):
         "Get single post"
         post = get_post_by_id(id)
         if not post:
-            return post(
+            return http_response(
                 msg="Post not found",
                 status=status.HTTP_404_NOT_FOUND,
                 error_code=ErrorCodes.NOT_FOUND,
@@ -131,7 +131,7 @@ class PostsView(APIView):
         "Get single post"
         post = get_post_by_id(id)
         if not post:
-            return post(
+            return http_response(
                 msg="Post not found",
                 status=status.HTTP_404_NOT_FOUND,
                 error_code=ErrorCodes.NOT_FOUND,

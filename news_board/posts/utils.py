@@ -85,12 +85,12 @@ def update_post(post, title, link, author_name):
 def delete_post(post):
     try:
         post.delete()
-        return True
+        return True, "success"
 
     except Exception as e:
         logger.error('delete_post@Error')
         logger.error(e)
-        return False
+        return False, str(e)
 
 
 ########
