@@ -63,7 +63,7 @@ class PostsView(APIView):
         serializer = PostSerializer(created_post)
 
         return http_response(
-            msg="User Successfully Created",
+            msg="Post Successfully Created",
             status=status.HTTP_201_CREATED,
             data=serializer.data
         )
@@ -112,7 +112,8 @@ class PostsView(APIView):
         )
 
     def delete(self, request, id, format=None):
-        "Get single post"
+        "delete single post"
+        
         post = get_post_by_id(id)
         if not post:
             return http_response(
@@ -141,7 +142,7 @@ class PostsView(APIView):
 class CommentsView(APIView):
     pagination_class = CustomPagination
 
-    def get(self, request, id, format=None):
+    def get(self, request, format=None):
         """Retrieve Posts comments"""
 
         payload = request.data
@@ -155,6 +156,7 @@ class CommentsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
                 error_code=ErrorCodes.INVALID_PAYLOAD,
             )
+
         post_id = payload['post_id']
         post = get_post_by_id(post_id)
         if not post:
@@ -186,7 +188,7 @@ class CommentsView(APIView):
         payload = request.data
         # check if required fields is present
         missingKeys = validate_keys(payload=payload, requiredKeys=[
-            'title', 'link', 'author_name',
+            'post_id', 'content', 'author_name',
         ])
         if missingKeys:
             return http_response(
@@ -195,33 +197,42 @@ class CommentsView(APIView):
                 error_code=ErrorCodes.INVALID_PAYLOAD,
             )
 
-        title = payload['title']
-        link = payload['link']
+        post_id = payload['post_id']
+        content = payload['content']
         author_name = payload['author_name']
 
-        created_post, msg = create_post(title, link, author_name)
-        if not created_post:
+        post_id = payload['post_id']
+        post = get_post_by_id(post_id)
+        if not post:
+            return http_response(
+                msg="Post not found",
+                status=status.HTTP_404_NOT_FOUND,
+                error_code=ErrorCodes.NOT_FOUND,
+            )
+
+        created_comment, msg = create_comment(post, content, author_name)
+        if not created_comment:
             return http_response(
                 msg=msg,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 error_code=ErrorCodes.SERVER_ERROR
             )
 
-        serializer = PostSerializer(created_post)
+        serializer = CommentSerializer(created_comment)
 
         return http_response(
-            msg="User Successfully Created",
+            msg="Comment Successfully Created",
             status=status.HTTP_201_CREATED,
             data=serializer.data
         )
 
     def put(self, request, id, format=None):
-        "Update a Post"
+        "Update a Comment"
 
         payload = request.data
         # check if required fields is present
         missingKeys = validate_keys(payload=payload, requiredKeys=[
-            'title', 'link', 'author_name',
+            'content', 'author_name',
         ])
         if missingKeys:
             return http_response(
@@ -230,62 +241,46 @@ class CommentsView(APIView):
                 error_code=ErrorCodes.INVALID_PAYLOAD,
             )
 
-        post_to_update = get_post_by_id(id)
-        if not post_to_update:
+        commment_to_update = get_comment_by_id(id)
+        if not commment_to_update:
             return http_response(
-                msg="Post not found",
+                msg="Comment not found",
                 status=status.HTTP_404_NOT_FOUND,
                 error_code=ErrorCodes.NOT_FOUND,
             )
 
-        title = payload['title']
-        link = payload['link']
+        content = payload['content']
         author_name = payload['author_name']
 
-        updated_post, msg = update_post(
-            post_to_update, title, link, author_name)
-        if not updated_post:
+        updated_comment, msg = update_comment(
+            commment_to_update, content, author_name)
+        if not updated_comment:
             return http_response(
                 msg=msg,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 error_code=ErrorCodes.SERVER_ERROR
             )
 
-        serializer = PostSerializer(updated_post)
+        serializer = CommentSerializer(updated_comment)
         return http_response(
-            msg="Post Successfully Updated",
-            status=status.HTTP_200_OK,
-            data=serializer.data
-        )
-
-    def get(self, request, id, format=None):
-        "Get single post"
-        post = get_post_by_id(id)
-        if not post:
-            return http_response(
-                msg="Post not found",
-                status=status.HTTP_404_NOT_FOUND,
-                error_code=ErrorCodes.NOT_FOUND,
-            )
-        serializer = PostSerializer(post)
-        return http_response(
-            msg="Post Successfully Retrieved",
+            msg="Commment Successfully Updated",
             status=status.HTTP_200_OK,
             data=serializer.data
         )
 
     def delete(self, request, id, format=None):
-        "Get single post"
-        post = get_post_by_id(id)
-        if not post:
+        "delete single comment"
+
+        comment = get_comment_by_id(id)
+        if not comment:
             return http_response(
-                msg="Post not found",
+                msg="Comment not found",
                 status=status.HTTP_404_NOT_FOUND,
                 error_code=ErrorCodes.NOT_FOUND,
             )
         
-        deleted_post, msg = delete_post(post)
-        if not deleted_post:
+        deleted_comment, msg = delete_comment(comment)
+        if not deleted_comment:
             return http_response(
                 msg=msg,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -293,7 +288,7 @@ class CommentsView(APIView):
             )
 
         return http_response(
-            msg="Post Successfully Deleted",
+            msg="Comment Successfully Deleted",
             status=status.HTTP_200_OK,
             data={
                 "status": True
