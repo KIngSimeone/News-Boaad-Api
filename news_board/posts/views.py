@@ -3,6 +3,7 @@ from api_utils.error_codes import ErrorCodes
 from api_utils.views import http_response, validate_keys
 from django.conf import settings
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 
 from .serializers import CommentSerializer, PostSerializer
@@ -294,3 +295,24 @@ class CommentsView(APIView):
                 "status": True
             }
         )
+
+
+@api_view(['POST'])
+def upvote_post(request, id):
+    post = get_post_by_id(id)
+    if not post:
+        return http_response(
+            msg="Post not found",
+            status=status.HTTP_404_NOT_FOUND,
+            error_code=ErrorCodes.NOT_FOUND,
+        )
+
+    post.upvotes = post.upvotes + 1
+    post.save()
+
+    serializer = PostSerializer(post)
+    return http_response(
+        msg="Post Successfully Upvoted",
+        status=status.HTTP_200_OK,
+        data=serializer.data
+    )
