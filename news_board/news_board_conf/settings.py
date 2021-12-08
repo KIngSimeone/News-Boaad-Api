@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-from posts.tasks import upvote_defaulter
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
@@ -172,7 +171,7 @@ CELERY_TIMEZONE = 'Africa/Lagos'
 CELERY_BEAT_SCHEDULE = {
     "sample_task": {
         "task": "upvote_defaulter",
-        "schedule": crontab(hour="*/24"),
+        "schedule": crontab(minute="*/1"),
     },
 }
 
