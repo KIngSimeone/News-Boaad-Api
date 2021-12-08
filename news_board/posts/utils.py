@@ -113,7 +113,7 @@ def get_posts_comments(post, search=None, filter=None):
             allComments = allComments.filter(
                 Q(author_name__icontains=search) |
                 Q(post__id__iexact=search) |
-                Q(id__iexact=search) 
+                Q(id__iexact=search)
             )
 
         return allComments

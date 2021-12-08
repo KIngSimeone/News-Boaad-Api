@@ -113,7 +113,7 @@ class PostsView(APIView):
 
     def delete(self, request, id, format=None):
         "delete single post"
-        
+
         post = get_post_by_id(id)
         if not post:
             return http_response(
@@ -121,7 +121,7 @@ class PostsView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
                 error_code=ErrorCodes.NOT_FOUND,
             )
-        
+
         deleted_post, msg = delete_post(post)
         if not deleted_post:
             return http_response(
@@ -278,7 +278,7 @@ class CommentsView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
                 error_code=ErrorCodes.NOT_FOUND,
             )
-        
+
         deleted_comment, msg = delete_comment(comment)
         if not deleted_comment:
             return http_response(
