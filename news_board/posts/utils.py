@@ -60,12 +60,12 @@ def create_post(title, link, author_name):
             link=link,
             author_name=author_name
         )
-        return post
+        return post, "success"
 
     except Exception as e:
         logger.error('create_post@error')
         logger.error(e)
-        return None
+        return None, str(e)
 
 
 def update_post(post, title, link, author_name):
