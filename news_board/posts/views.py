@@ -111,22 +111,6 @@ class PostsView(APIView):
             data=serializer.data
         )
 
-    def get(self, request, id, format=None):
-        "Get single post"
-        post = get_post_by_id(id)
-        if not post:
-            return http_response(
-                msg="Post not found",
-                status=status.HTTP_404_NOT_FOUND,
-                error_code=ErrorCodes.NOT_FOUND,
-            )
-        serializer = PostSerializer(post)
-        return http_response(
-            msg="Post Successfully Retrieved",
-            status=status.HTTP_200_OK,
-            data=serializer.data
-        )
-
     def delete(self, request, id, format=None):
         "Get single post"
         post = get_post_by_id(id)
@@ -157,10 +141,22 @@ class PostsView(APIView):
 class CommentsView(APIView):
     pagination_class = CustomPagination
 
-    def get(self, request, postId, format=None):
+    def get(self, request, id, format=None):
         """Retrieve Posts comments"""
 
-        post = get_post_by_id(postId)
+        payload = request.data
+        # check if required fields is present
+        missingKeys = validate_keys(payload=payload, requiredKeys=[
+            'post_id'
+        ])
+        if missingKeys:
+            return http_response(
+                msg=f"The following key(s) are missing in the request payload: {missingKeys}",
+                status=status.HTTP_400_BAD_REQUEST,
+                error_code=ErrorCodes.INVALID_PAYLOAD,
+            )
+        post_id = payload['post_id']
+        post = get_post_by_id(post_id)
         if not post:
             return http_response(
                 msg="Post not found",
