@@ -109,4 +109,20 @@ class PostsView(APIView):
             status=status.HTTP_200_OK,
             data=serializer.data
         )
+    
+    def get(self, request, id, format=None):
+        "Get single post"
+        post = get_post_by_id(id)
+        if not post:
+            return post(
+                msg="Post not found",
+                status=status.HTTP_404_NOT_FOUND,
+                error_code=ErrorCodes.NOT_FOUND,
+            )
+        serializer = PostSerializer(post)
+        return http_response(
+            msg="Post Successfully Updated",
+            status=status.HTTP_200_OK,
+            data=serializer.data
+        )
 
