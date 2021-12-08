@@ -126,3 +126,29 @@ class PostsView(APIView):
             status=status.HTTP_200_OK,
             data=serializer.data
         )
+
+    def delete(self, request, id, format=None):
+        "Get single post"
+        post = get_post_by_id(id)
+        if not post:
+            return post(
+                msg="Post not found",
+                status=status.HTTP_404_NOT_FOUND,
+                error_code=ErrorCodes.NOT_FOUND,
+            )
+        
+        deleted_post, msg = delete_post(post)
+        if not deleted_post:
+            return http_response(
+                msg=msg,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                error_code=ErrorCodes.SERVER_ERROR
+            )
+
+        return http_response(
+            msg="Post Successfully Deleted",
+            status=status.HTTP_200_OK,
+            data={
+                "status": True
+            }
+        )
