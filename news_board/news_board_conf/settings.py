@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
+
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -104,7 +105,6 @@ DATABASES = {
 }
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -158,6 +158,22 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'Access-Token',
     'Secret',
 ]
+
+
+# CELERY STUFF
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Lagos'
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "upvote_defaulter",
+        "schedule": crontab(minute="*/1"),
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

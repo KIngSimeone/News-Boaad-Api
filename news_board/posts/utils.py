@@ -75,19 +75,100 @@ def update_post(post, title, link, author_name):
         post.author_name = author_name
         post.save()
 
-        return post
+        return post, "success"
     except Exception as e:
         logger.error('update_post@error')
         logger.error(e)
-        return None
+        return None, str(e)
 
 
 def delete_post(post):
     try:
         post.delete()
-        return True
+        return True, "success"
 
     except Exception as e:
         logger.error('delete_post@Error')
         logger.error(e)
-        return False
+        return False, str(e)
+
+
+########
+def get_posts_comments(post, search=None, filter=None):
+    try:
+        queryset = dict()
+        if filter is not None:
+            for key, value in filter.items():
+                if key in Posts.__dict__.keys():
+                    queryset[key] = value
+
+        allComments = Comments.objects.filter(post=post)
+
+        if len(queryset) > 0:
+            # filter allComments by queryset
+            allComments = allComments.filter(**queryset)
+
+        if search:
+            # search allComments
+            allComments = allComments.filter(
+                Q(author_name__icontains=search) |
+                Q(post__id__iexact=search) |
+                Q(id__iexact=search)
+            )
+
+        return allComments
+
+    except Exception as e:
+        logger.error('get_all_comments@Error')
+        logger.error(e)
+        return []
+
+
+def get_comment_by_id(id):
+    try:
+        comment = Comments.objects.get(id=id)
+        return comment
+
+    except ObjectDoesNotExist as e:
+        logger.error('get_comment_by_id@Error')
+        logger.error(e)
+        return None
+
+
+def create_comment(post, content, author_name):
+    try:
+        comment = Comments.objects.create(
+            post=post,
+            content=content,
+            author_name=author_name
+        )
+        return comment, "success"
+
+    except Exception as e:
+        logger.error('create_comment@error')
+        logger.error(e)
+        return None, str(e)
+
+
+def update_comment(comment, content, author_name):
+    try:
+        comment.content = content
+        comment.author_name = author_name
+        comment.save()
+
+        return comment, "success"
+    except Exception as e:
+        logger.error('update_comment@error')
+        logger.error(e)
+        return None, str(e)
+
+
+def delete_comment(comment):
+    try:
+        comment.delete()
+        return True, "success"
+
+    except Exception as e:
+        logger.error('delete_comment@Error')
+        logger.error(e)
+        return False. str(e)

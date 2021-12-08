@@ -9,6 +9,7 @@ class Posts(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
 class Comments(models.Model):
+    post = models.ForeignKey(Posts, on_delete=models.SET_NULL, null=True)
     content = models.TextField(null=True)
     author_name = models.TextField(null=True)
     created_date = models.DateTimeField(auto_now_add=True)
